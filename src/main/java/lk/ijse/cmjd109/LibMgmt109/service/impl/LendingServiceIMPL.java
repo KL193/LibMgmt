@@ -9,6 +9,7 @@ import lk.ijse.cmjd109.LibMgmt109.entities.LendingEntity;
 import lk.ijse.cmjd109.LibMgmt109.entities.MemberEntity;
 import lk.ijse.cmjd109.LibMgmt109.exception.*;
 import lk.ijse.cmjd109.LibMgmt109.service.LendingService;
+import lk.ijse.cmjd109.LibMgmt109.util.EntityDTOConversion;
 import lk.ijse.cmjd109.LibMgmt109.util.LendingMapping;
 import lk.ijse.cmjd109.LibMgmt109.util.UtilityData;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class LendingServiceIMPL implements LendingService {
     private final LendingDao lendingDao;
     @Value("${perDayFine}")
     private Double perDayFine;
+    private final EntityDTOConversion entityDTOConversion;
 
 
     @Override
@@ -96,7 +98,10 @@ public class LendingServiceIMPL implements LendingService {
 
     @Override
     public List<LendingDTO> getAllLendings() {
-        return List.of();
+
+        List<LendingEntity> allLendings
+                = lendingDao.findAll();
+        return entityDTOConversion.getAllDTOLendings(allLendings);
     }
     private Long calcOverdue(LocalDate returnDate) {
         var today = UtilityData.generateTodayDate();
