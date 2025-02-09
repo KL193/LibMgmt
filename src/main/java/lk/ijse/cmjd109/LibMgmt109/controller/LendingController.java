@@ -15,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LendingController {
  private final LendingService lendingService;
+
  @PostMapping
  public ResponseEntity<Void> addLending(@RequestBody LendingDTO lendingDTO){
      if(lendingDTO == null){
@@ -50,12 +51,33 @@ public class LendingController {
  }
  @DeleteMapping("/{lendingId}")
  public ResponseEntity<Void> deleteLending(@PathVariable String lendingId){
-     return ResponseEntity.noContent().build();
+     try{
+         lendingService.deleteLending(lendingId);
+         return ResponseEntity.noContent().build();
+     }
+     catch(LendingNotFoundException e){
+         e.printStackTrace();
+         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+     }
+
+     catch (Exception e){
+         e.printStackTrace();
+         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+     }
+
  }
  @GetMapping ("/{lendingId}")
  public ResponseEntity<LendingDTO> getSpecificLending(@PathVariable String lendingId){
-     lendingService.getSpecificLending(lendingId);
-     return ResponseEntity.ok().body(lendingService.getSpecificLending(lendingId));
+     try {
+         lendingService.getSpecificLending(lendingId);
+         return ResponseEntity.ok().body(lendingService.getSpecificLending(lendingId));
+     }catch (LendingNotFoundException e){
+         e.printStackTrace();
+         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+     }catch (Exception e){
+         e.printStackTrace();
+         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+     }
  }
  @GetMapping
  public ResponseEntity<List<LendingDTO>> getAllLending(){
