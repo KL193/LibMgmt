@@ -66,6 +66,7 @@ public class BookController {
     }
     @GetMapping(value = "getall",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<BookDTO>> getAllBooks(){
+
         return ResponseEntity.ok(bookService.getAllBooks());
     }
 
